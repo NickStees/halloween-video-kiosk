@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!-- This is the Jekyll template used to render pages -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Home</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Our CSS -->
+        <style>
+
+        body {
+          background-color: black;
+        }
+
+        #bgvid {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          min-width: 100%;
+          min-height: 100%;
+          width: auto;
+          height: auto;
+          z-index: -100;
+          -webkit-transform: translateX(-50%) translateY(-50%);
+                  transform: translateX(-50%) translateY(-50%);
+          background-size: cover;
+          transition: 1s opacity;
+          transition: all 2s;
+        }
+        </style>
+
+        <script src="assets/js/vendor/jquery.js" charset="utf-8"></script>
+    </head>
+    <body>
+
+      <div id="bgvid_wrapper">
+        <video id="bgvid" playsinline autoplay src=""></video>
+      </div>
+
+
+
+<script type="text/javascript">
+
+// ####################################
+// ########## haloween videos ###########
+// ####################################
+// configuration options
+
+// edit this adjust how long between a videos the delay is
+// by default its 1 - 10
+var minWait = 1;
+var maxWait = 10;
+var randomizeVideos = true;
+
+// An array of your videos such as '/videos/monster.mp4',
+// checkout https://atmosfx.com/ for great videos
+var videoSources = [
+  'videos/zombie.mp4',
+  'videos/zombie-jump-scare.mp4',
+  'videos/witch.mp4',
+  'videos/skeleton.mp4',
+  'videos/monster-jump-scare.mp4',
+  'videos/pumpkin-song-for-little-kids.mp4'
+];
+
+// Randomize videos
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+// if randomizeVideos is true, randomize them
+if(randomizeVideos){
+  videoSources = shuffle(videoSources);
+}
+
+// keep track of the current position, well start at 0 the first video
+var i = 0;
+
+// This is the normal transition, fades video out, waits fades in new vieo and plays
+function nextVideo(e) {
+  var randomWait = (Math.floor(Math.random() * (maxWait - minWait))+minWait)*1000;
+  $('#bgvid').css('opacity', '0');
+  if(i == (videoSources.length -1) ){
+    i = 0;
+  }else{
+    i++;
+  }
+  setTimeout(function(){
+    playVideo(videoSources[i]);
+  }, randomWait);
+
+}
+
+// no transition with previous video
+function prevVideo(e) {
+  $('#bgvid').css('opacity', '0');
+  if(i == 0 ){
+    i = videoSources.length -1;
+  }else{
+    i--;
+  }
+  playVideo(videoSources[i]);
+}
+
+// This is a gradual video stop where it fades out
+function vidStop(e) {
+  $('#bgvid').css('opacity', '0');
+  setTimeout(function(){
+    document.getElementById('bgvid').pause();
+  }, 2000);
+}
+
+// This is an instant video start
+function playVideo(video) {
+  $('#bgvid').attr("src", video).css('opacity', '1').play;
+}
+
+// This watches for when the current video ends
+// and triggers the next video by calling nextVideo()
+document.getElementById('bgvid').addEventListener('ended',nextVideo,false);
+
+// This is where we map actions to keyboard input keys
+// to find a keycode open the console F12 and every key press is recorded
+// to the console, they are usually a number combination
+$(document).keydown(function(e) {
+    console.log(e.keyCode);
+    if(e.keyCode == 39){
+      // right arrow
+      nextVideo();
+    }
+    if(e.keyCode == 37){
+      // left arrow
+      prevVideo();
+    }
+    if(e.keyCode == 32){
+      // spacebar
+      vidStop();
+    }
+    if(e.keyCode == 13){
+      // enter
+      nextVideo();
+    }
+    if(e.keyCode == 83){
+      // s
+      playVid('/videos/witch.mp4');
+    }
+    if(e.keyCode == 90){
+      // z
+      playVid('/videos/zombie-jump-scare.mp4');
+    }
+
+    if(e.keyCode == 75){
+      // k
+      playVid('/videos/pumpkin-song-for-little-kids.mp4');
+    }
+    if(e.keyCode == 67){
+      // c
+      playVid('/videos/monster-jump-scare.mp4');
+    }
+    if(e.keyCode == 88){
+      // x
+      playVid('/videos/zombie.mp4');
+    }
+
+});
+
+// This triggers the very first video to start playing.
+playVideo(videoSources[i]);
+
+</script>
+
+
+    </body>
+</html>
